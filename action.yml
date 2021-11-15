@@ -17,10 +17,8 @@ runs:
   steps:
     - name: Cancel Message
       run: echo 'Canceled - Dependencies failure'
-      shell: bash
     - name: Throw
       uses: actions/github-script@v5
       with:
         script: |
           core.setFailed('Not runs, because of previous failure')
-      shell: bash

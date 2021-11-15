@@ -1,0 +1,25 @@
+name: Deploy WeKnow Packages
+description: "Common workflow of deploying WeKnow Packages"
+
+# doc: https://docs.github.com/en/actions
+# custom: https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# variables: https://docs.github.com/en/actions/learn-github-actions/environment-variables
+# secrets: https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#example-17
+
+# PUSH RELEASE:
+#  git tag -a -m "Release version" v#
+#  git push --follow-tags
+
+# inputs:
+
+runs:
+  using: "composite"
+  if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+  steps:
+    - name: Cancel Message
+      run: echo 'Canceled - Dependencies failure'
+    - name: Throw
+      uses: actions/github-script@v3
+      with:
+        script: |
+          core.setFailed('Not runs, because of previous failure')

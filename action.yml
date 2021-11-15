@@ -17,6 +17,7 @@ runs:
   steps:
     - name: Cancel Message
       run: echo 'Canceled - Dependencies failure'
+      shell: cmd
     - name: Throw
       uses: actions/github-script@v5
       with:

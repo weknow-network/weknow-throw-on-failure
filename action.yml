@@ -1,5 +1,5 @@
-name: Deploy WeKnow Packages
-description: "Common workflow of deploying WeKnow Packages"
+name: Throw On Error Conclusion
+description: "Stop execution when previous stage has error or cancellation"
 
 # doc: https://docs.github.com/en/actions
 # custom: https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
@@ -14,12 +14,25 @@ description: "Common workflow of deploying WeKnow Packages"
 
 runs:
   using: "composite"
-  steps:
-    - name: Cancel Message
-      run: echo 'Canceled - Dependencies failure'
-      shell: cmd
-    - name: Throw
-      uses: actions/github-script@v5
-      with:
-        script: |
-          core.setFailed('Not runs, because of previous failure')
+    steps:
+      - name: Cancel Message
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        run: echo 'Stopped - Dependencies failure'
+
+      - name: Throw
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        uses: actions/github-script@v5
+        with:
+          script: |
+              core.setFailed('Stopped because of previous failure')
+
+      - name: Cancel Message
+        if: ${{ github.event.workflow_run.conclusion == 'cancelled' }}
+        run: echo 'Cancelled'
+
+      - name: Throw
+        if: ${{ github.event.workflow_run.conclusion == 'cancelled' }}
+        uses: actions/github-script@v5
+        with:
+          script: |
+              core.setFailed('Cancelled because of previous cancellation')

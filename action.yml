@@ -14,25 +14,22 @@ description: "Stop execution when previous stage has error or cancellation"
 
 runs:
   using: "composite"
-    steps:
-      - name: Cancel Message
-        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-        run: echo 'Stopped - Dependencies failure'
-
-      - name: Throw
-        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-        uses: actions/github-script@v5
-        with:
-          script: |
-              core.setFailed('Stopped because of previous failure')
-
-      - name: Cancel Message
-        if: ${{ github.event.workflow_run.conclusion == 'cancelled' }}
-        run: echo 'Cancelled'
-
-      - name: Throw
-        if: ${{ github.event.workflow_run.conclusion == 'cancelled' }}
-        uses: actions/github-script@v5
-        with:
-          script: |
-              core.setFailed('Cancelled because of previous cancellation')
+  steps:
+    - name: Cancel Message
+      if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+      run: echo 'Stopped - Dependencies failure'
+    - name: Throw
+      if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+      uses: actions/github-script@v5
+      with:
+        script: |
+            core.setFailed('Stopped because of previous failure')
+    - name: Cancel Message
+      if: ${{ github.event.workflow_run.conclusion == 'cancelled' }}
+      run: echo 'Cancelled'
+    - name: Throw
+      if: ${{ github.event.workflow_run.conclusion == 'cancelled' }}
+      uses: actions/github-script@v5
+      with:
+        script: |
+            core.setFailed('Cancelled because of previous cancellation')
